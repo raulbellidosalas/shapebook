@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:6
+    container_name: forum-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    networks:
+      - forum-net
+    volumes:
+      - mongo-data:/data/db
+
+  backend:
+    build: .
+    container_name: forum-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - MONGO_URI=mongodb://forum-mongo:27017/forumdb
+    depends_on:
+      - mongo
+    networks:
+      - forum-net
+
+volumes:
+  mongo-data:
+
+networks:
+  forum-net:
